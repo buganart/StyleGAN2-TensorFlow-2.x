@@ -1,7 +1,9 @@
 import tensorflow as tf
 
+
 class DatasetLoader:
     """ Helper for load the dataset using tf.Dataset class """
+
     def __init__(self, path_dir, resolution, batch_size, cache_file=True):
         """
         path_dir : Directory of the image dataset
@@ -13,8 +15,8 @@ class DatasetLoader:
         self.batch_size = batch_size
         self.cache_file = cache_file
         self.AUTOTUNE = tf.data.experimental.AUTOTUNE
-        
-        list_ds = tf.data.Dataset.list_files(str(path_dir+'/*'))
+
+        list_ds = tf.data.Dataset.list_files(str(path_dir + "/*"))
         labeled_ds = list_ds.map(self.process_path, num_parallel_calls=self.AUTOTUNE)
         self.train_ds = self.prepare_for_training(labeled_ds, cache=self.cache_file)
 
@@ -30,14 +32,14 @@ class DatasetLoader:
         # load the raw data from the file as a string
         img = tf.io.read_file(file_path)
         return self.decode_img(img)
-    
+
     def get_batch(self):
         images = next(iter(self.train_ds))
-        return tf.transpose(images, [0, 3, 1, 2]) 
+        return tf.transpose(images, [0, 3, 1, 2])
 
     def prepare_for_training(self, ds, cache=True, shuffle_buffer_size=100):
-      # use `.cache(filename)` to cache preprocessing work for datasets that don't
-      # fit in memory.
+        # use `.cache(filename)` to cache preprocessing work for datasets that don't
+        # fit in memory.
         if cache:
             if isinstance(cache, str):
                 ds = ds.cache(cache)
